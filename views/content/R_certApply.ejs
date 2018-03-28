@@ -1,0 +1,121 @@
+<div class="mdui-card mdui-m-y-1">
+
+    <!-- 卡片的标题和副标题 -->
+    <div class="mdui-card-primary mdui-color-theme-accent">
+        <div class="mdui-card-primary-title">证书申请成功</div>
+        <div class="mdui-card-primary-subtitle">以下是证书信息，请妥善保存并及时使用</div>
+    </div>
+    <div class="mdui-table-fluid">
+        <table class="mdui-table mdui-table-hoverable">
+            <tbody>
+            <tr>
+                <td>证书DN</td>
+                <td><%= _Dn %></td>
+            </tr>
+            <tr>
+                <td>证书顺序号</td>
+                <td><%= _SequenceNo %></td>
+            </tr>
+            <tr>
+                <td>序列号</td>
+                <td><%= _SerialNo %></td>
+            </tr>
+            <tr>
+                <td>授权码</td>
+                <td><%= _AuthCode %></td>
+            </tr>
+            <tr>
+                <td>生效时间</td>
+                <td><%= _StartTime %></td>
+            </tr>
+            <tr>
+                <td>截止时间</td>
+                <td><%= _EndTime %></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script type="text/javascript">
+        function installCert(keyIndex,cert) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://LocalSign.gps949.com:11949/RSAP12Gen", true);
+            xhr.overrideMimeType('application/json; charset = utf-8')
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        document.getElementById("waitBar").setAttribute("hidden","hidden");
+                        if(JSON.parse(this.responseText).P12==="OK"){
+                            mdui.alert('pfx已成功保存');
+                        } else {
+                            mdui.alert('pfx保存失败');
+                        }
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({
+                "keyIndex": keyIndex,
+                "cert": cert
+            }));
+        }
+        function getCert(P10,keyIndex){
+            document.getElementById("waitBar").removeAttribute("hidden");
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "certDownload", true);
+            xhr.overrideMimeType('application/json; charset = utf-8')
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        installCert(keyIndex,JSON.parse(this.responseText).SignatureCert);
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({
+                "P10": P10,
+                "SN": "<%= _SerialNo %>",
+                "AuthCode":"<%= _AuthCode %>"
+            }));
+        }
+        function getP10(keyLen, DN) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://LocalSign.gps949.com:11949/RSAP10Gen", true);
+            xhr.overrideMimeType('application/json; charset = utf-8')
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        var res = JSON.parse(this.responseText);
+                        getCert(res.P10,res.keyIndex);
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({
+                "keyLen": keyLen,
+                "DN": DN
+            }));
+        }
+
+        function getPFX() {
+            getP10("<%= _KeyLen %>", "<%= _Dn %>");
+        }
+    </script>
+
+    <div class="mdui-progress" style="height:7px">
+        <div id="waitBar" class="mdui-progress-indeterminate mdui-color-red" hidden="hidden"></div>
+    </div>
+    <!-- 卡片的按钮 -->
+    <div class="mdui-card-actions  mdui-valign">
+        <input type="button" value="返回"
+               class="mdui-btn mdui-ripple mdui-color-theme-accent mdui-float-left"
+               onclick="javascript:history.go(-1);"/>
+        <input type="button" value="完成"
+               class="mdui-btn mdui-ripple mdui-color-theme-accent mdui-float-left"
+               onclick="new function (){window.location.href='certApply'}"/>
+        <input type="button" value="生成pfx"
+               class="mdui-btn mdui-ripple mdui-color-theme-accent mdui-float-left"
+               onclick="getPFX()"/>
+    </div>
+
+</div>

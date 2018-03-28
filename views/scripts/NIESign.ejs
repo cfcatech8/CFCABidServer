@@ -1,0 +1,41 @@
+function initPlugin() {
+}
+
+function selectSignCert() {
+try {
+document.getElementById("certDN").value = "";
+document.getElementById("certSN").value = "";
+var issuerDNFilter = "<%= issuerDNFilter %>";
+
+var source = document.cookie.substr(document.cookie.indexOf("RAE_rand") + 9, 8);
+var xhr = new XMLHttpRequest();
+xhr.open("POST", "https://LocalSign.gps949.com:11949/RSAP7DetachSign", true);
+xhr.overrideMimeType('application/json; charset = utf-8')
+xhr.setRequestHeader("Content-type", "application/json");
+xhr.onreadystatechange = function () {
+if (xhr.readyState == 4) {
+if (xhr.status == 200) {
+var restxt = this.responseText;
+var sig = JSON.parse(restxt).Signature;
+var DN = JSON.parse(restxt).DN;
+var SN = JSON.parse(restxt).SN;
+if (sig !== "ERROR") {
+document.getElementById("P7Sign").value = sig;
+document.getElementById("certDN").value = DN;
+document.getElementById("certSN").value = SN;
+} else {
+alert("选择证书签名失败!");
+}
+
+}
+}
+};
+xhr.send(JSON.stringify({
+"FilterDN": "",
+"Src": source
+}));
+}
+catch (e) {
+alert("选择证书失败!");
+}
+}

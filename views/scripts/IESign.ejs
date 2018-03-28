@@ -1,0 +1,52 @@
+var $$ = mdui.JQ;
+var CryptoAgent = "";
+
+function initPlugin() {
+CryptoAgent = document.getElementById("CryptoAgent");
+}
+
+function selectSignCert() {
+try {
+document.getElementById("certDN").value = "";
+document.getElementById("certSN").value = "";
+
+var issuerDNFilter = "<%= issuerDNFilter %>";
+var bSelectCertResult = CryptoAgent.SelectCertificate("", issuerDNFilter, "");
+
+if (!bSelectCertResult) {
+var errorDesc = CryptoAgent.GetLastErrorDesc();
+alert("选择证书失败: " + errorDesc);
+return;
+}
+
+var DNinfo = CryptoAgent.GetSignCertInfo("SubjectDN");
+if (!DNinfo) {
+var errorDesc = CryptoAgent.GetLastErrorDesc();
+alert("选择证书失败: " + errorDesc);
+return;
+}
+document.getElementById("certDN").value = DNinfo;
+
+var SNinfo = CryptoAgent.GetSignCertInfo("SerialNumber");
+if (!SNinfo) {
+var errorDesc = CryptoAgent.GetLastErrorDesc();
+alert("选择证书失败: " + errorDesc);
+return;
+}
+document.getElementById("certSN").value = SNinfo;
+
+var source = document.cookie.substr(document.cookie.indexOf("RAE_rand") + 9, 8);
+console.log(source);
+var signature = CryptoAgent.SignMsgPKCS7(source, "SHA-1", false);
+if (!signature) {
+var errorDesc = CryptoAgent.GetLastErrorDesc();
+alert("证书签名失败: " + errorDesc);
+return;
+}
+document.getElementById("P7Sign").value = signature;
+}
+catch (e) {
+var errorDesc = CryptoAgent.GetLastErrorDesc();
+alert("选择证书失败: " + errorDesc);
+}
+}

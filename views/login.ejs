@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="utf-8"/>
+    <title>RAE登录</title>
+
+    <link rel="stylesheet" href="css/mdui.min.css"/>
+    <script type="text/javascript" src="js/mdui.min.js"></script>
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?e229cde3aec673670d4d203d99a7314b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+    <%- cryptoPlugin %>
+</head>
+
+<body class="mdui-theme-accent-indigo" onload="initPlugin()">
+<div class="mdui-container " style="align-content: center">
+    <form action="login" class="mdui-row" method="post">
+        <div class=" mdui-col-sm-6 mdui-col-md-4 ">
+            <div class="mdui-card mdui-m-y-1">
+
+                <!-- 卡片的标题和副标题 -->
+                <div class="mdui-card-primary mdui-color-theme-accent">
+                    <div class="mdui-card-primary-title">RAE登录</div>
+                    <div class="mdui-card-primary-subtitle">请选择证书以登录</div>
+                </div>
+
+
+                <div class="mdui-textfield mdui-textfield-label mdui-m-x-1">
+                    <label class="mdui-textfield-label" for="certDN">证书DN</label>
+                    <input id="certDN" class="mdui-textfield-input" type="DN" name="login_DN" readonly="readonly"/>
+                </div>
+                <div class="mdui-textfield mdui-textfield-label mdui-m-x-1">
+                    <label class="mdui-textfield-label" for="certSN">证书SN</label>
+                    <input id="certSN" class="mdui-textfield-input" type="SN" name="login_SN" readonly="readonly"/>
+                </div>
+                <input id="P7Sign" name="P7Sign" hidden="hidden">
+
+
+                <!-- 卡片的按钮 -->
+                <div class="mdui-card-actions  mdui-valign">
+                    <input type="button" value="选择证书"
+                           class="mdui-btn mdui-ripple mdui-color-theme-accent mdui-float-left"
+                           onclick="selectSignCert()"/>
+                    <input type="submit" value="登入"
+                           class="mdui-btn mdui-ripple mdui-color-theme-accent mdui-float-left"/>
+                    <a class="mdui-text-color-red" href="<%= msgLink %>"><%= msg %></a>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+
+<script type="text/javascript">
+
+    <%- include( scriptpath , scriptargs ) %>
+
+</script>
+
+</html>

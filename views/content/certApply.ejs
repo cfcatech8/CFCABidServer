@@ -1,0 +1,211 @@
+<form action="certApply" method="post">
+    <div class="mdui-row mdui-m-b-2">
+        <label id="KeyAlgText" class="mdui-textfield-label" for="certType">证书类型</label>
+        <select name="certType" id="certType" class="mdui-select" mdui-select="{position: 'bottom'}"
+                onchange="certTypeChange()">
+            <% certTypes.forEach(function(certType) { %>
+            <option value="<%= certType.ID %>"><%= certType.Desc %></option>
+            <% }) %>
+        </select>
+    </div>
+
+    <div id="KeyLenBlock" class="mdui-row ">
+        <label class="mdui-text-color-theme-secondary" for="KeyLenChooser">密钥长度</label>
+        <div id="KeyLenChooser" class="mdui-btn-group mdui-m-l-1">
+        </div>
+    </div>
+
+    <div class="mdui-row ">
+        <div class="mdui-textfield ">
+            <label class="mdui-textfield-label" for="UserName">用户名称</label>
+            <input name="UserName" id="UserName" class="mdui-textfield-input" required maxlength="80"/>
+            <div class="mdui-textfield-error">必须填写用户名称</div>
+        </div>
+    </div>
+    <div class="mdui-row ">
+        <label class="mdui-textfield-label" for="IdentType">证件类型</label>
+        <select name="IdentType" id="IdentType" class="mdui-select" mdui-select="{position: 'bottom'}">
+            <% IdentTypes.forEach(function(IdentType) { %>
+            <option value="<%= IdentType.ID %>"><%= IdentType.Desc %></option>
+            <% }) %>
+        </select>
+    </div>
+    <div class="mdui-row ">
+        <div class="mdui-textfield ">
+            <label class="mdui-textfield-label" for="IdentNo">证件号码</label>
+            <input name="IdentNo" id="IdentNo" class="mdui-textfield-input" required maxlength="80"/>
+            <div class="mdui-textfield-error">必须填写证件号码</div>
+        </div>
+        <label class="mdui-switch">
+            添加证件号码扩展域
+            <input name="AddIdentNoExt" type="checkbox" value="on"/>
+            <i class="mdui-switch-icon mdui-m-l-1"></i>
+        </label>
+    </div>
+    <div class="mdui-row ">
+        <div class="mdui-textfield ">
+            <label class="mdui-textfield-label" for="Email">电子邮箱</label>
+            <input name="Email" id="Email" class="mdui-textfield-input" type="email" maxlength="80"/>
+        </div>
+        <label class="mdui-switch">
+            添加邮件主题备用名扩展域
+            <input name="AddEmailExt" type="checkbox" value="on"/>
+            <i class="mdui-switch-icon mdui-m-l-1"></i>
+        </label>
+    </div>
+    <div class="mdui-row ">
+        <div class="mdui-textfield ">
+            <label class="mdui-textfield-label" for="PhoneNo">电话号码</label>
+            <input name="PhoneNo" id="PhoneNo" class="mdui-textfield-input" maxlength="20"/>
+        </div>
+    </div>
+    <div class="mdui-row ">
+        <div class="mdui-textfield ">
+            <label class="mdui-textfield-label" for="Address">地址</label>
+            <input name="Address" id="Address" class="mdui-textfield-input" maxlength="160"/>
+        </div>
+    </div>
+    <div class="mdui-row ">
+        <div class="mdui-textfield ">
+            <label class="mdui-textfield-label" for="UserNameInDn">用户别名</label>
+            <input name="UserNameInDn" id="UserNameInDn" class="mdui-textfield-input" maxlength="80"/>
+        </div>
+    </div>
+    <div class="mdui-row ">
+        <div class="mdui-textfield ">
+            <label class="mdui-textfield-label" for="UserIdent">用户标识</label>
+            <input name="UserIdent" id="UserIdent" class="mdui-textfield-input" maxlength="80"/>
+        </div>
+    </div>
+    <div class="mdui-row ">
+        <div class="mdui-textfield ">
+            <label class="mdui-textfield-label" for="Duration">有效期 (<%= certTermUnit %>)</label>
+            <input name="Duration" id="Duration" class="mdui-textfield-input" pattern="^[1-9]+[0-9]*$" maxlength="4"/>
+            <div class="mdui-textfield-error">有效期填写误</div>
+        </div>
+    </div>
+    <div class="mdui-row ">
+        <div class="mdui-textfield ">
+            <label class="mdui-textfield-label" for="EndTimeChooser">截止时间</label>
+            <input id="EndTimeChooser" class="form_datetime mdui-textfield-input" size="16" type="text"
+                   value="" data-link-field="EndTime" readonly>
+        </div>
+    </div>
+    <div class="mdui-row ">
+        <div class="mdui-textfield ">
+            <label class="mdui-textfield-label" for="SelfExtValue">自定义扩展域</label>
+            <input name="SelfExtValue" id="SelfExtValue" class="mdui-textfield-input" maxlength="160"/>
+        </div>
+    </div>
+    <input hidden id="EndTime" name="EndTime" value=""/>
+    <input hidden id="KeyLength" name="KeyLength" value="">
+    <input hidden id="KeyAlg" name="KeyAlg" value="">
+
+    <input type="submit" value="提交"
+           class="mdui-btn mdui-ripple mdui-color-theme-accent mdui-m-t-1"/>
+</form>
+<script type="text/javascript" src="js/jquery-1.8.3.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script type="text/javascript">
+    $('.form_datetime').datetimepicker({
+        language: 'zh-CN',
+        format: 'yyyy年mm月dd日 hh:ii',
+        autoclose: 1,
+        weekStart: 1,
+        todayBtn: 1,
+        todayHighlight: 1,
+        startView: 2,
+        forceParse: 0,
+        minuteStep: 15,
+        showMeridian: 1
+    });
+</script>
+<script type="text/javascript">
+    function renewKeyLen() {
+        if (document.getElementById("certType").value.split('_')[0].indexOf("RSA") > -1) {
+            document.getElementById("KeyLenBlock").removeAttribute("hidden");
+            switch (document.getElementById("certType").value.split('_')[1]) {
+                case "1024":
+                    var d = document.getElementById("KeyLenChooser");
+                    d.innerHTML =
+                        "<button type=\"button\" class=\"mdui-btn mdui-btn-active\" onclick=\"chooseKeyLen(this)\">1024</button>"
+                        + "<button type=\"button\" class=\"mdui-btn\" onclick=\"chooseKeyLen(this)\">2048</button>"
+                        + "<button type=\"button\" class=\"mdui-btn\" onclick=\"chooseKeyLen(this)\">4096</button>";
+                    document.getElementById("KeyLength").value = "1024";
+                    break;
+                case "2048":
+                    var d = document.getElementById("KeyLenChooser");
+                    d.innerHTML =
+                        "<button type=\"button\" class=\"mdui-btn mdui-btn-active\" onclick=\"chooseKeyLen(this)\">2048</button>"
+                        + "<button type=\"button\" class=\"mdui-btn\" onclick=\"chooseKeyLen(this)\">4096</button>";
+                    document.getElementById("KeyLength").value = "2048";
+                    break;
+                case "4096":
+                    var d = document.getElementById("KeyLenChooser");
+                    d.innerHTML =
+                        "<button type=\"button\" class=\"mdui-btn mdui-btn-active\" onclick=\"chooseKeyLen(this)\">2048</button>"
+                        + "<button type=\"button\" class=\"mdui-btn\" onclick=\"chooseKeyLen(this)\">4096</button>";
+                    document.getElementById("KeyLength").value = "4096";
+                    break;
+                default:
+                    document.getElementById("KeyLenBlock").setAttribute("hidden", "hidden");
+                    break;
+            }
+        } else {
+            document.getElementById("KeyLength").value = "256";
+            document.getElementById("KeyLenBlock").setAttribute("hidden", "hidden");
+        }
+    }
+
+    function renewIDType() {
+        var selector = new mdui.Select('#IdentType');
+        mdui.JQ("#IdentType").empty();
+
+        switch (document.getElementById("certType").value.split('_')[2]) {
+            case "1":
+            case "4":
+            case "5":
+            <% IdentTypes.forEach(function (IdentType) { if (IdentType.ID.split('_')[1] === "1" || IdentType.ID.split('_')[1] === "0") { %>
+                mdui.JQ("#IdentType").append('<option value="<%= IdentType.ID %>"><%= IdentType.Desc %></option>');
+            <% }}) %>
+                break;
+            case "2":
+            <% IdentTypes.forEach(function (IdentType) { if (IdentType.ID.split('_')[1] === "2" || IdentType.ID.split('_')[1] === "0") { %>
+                mdui.JQ("#IdentType").append('<option value="<%= IdentType.ID %>"><%= IdentType.Desc %></option>');
+            <% }}) %>
+                break;
+            case "7":
+            <% IdentTypes.forEach(function (IdentType) { %>
+                mdui.JQ("#IdentType").append('<option value="<%= IdentType.ID %>"><%= IdentType.Desc %></option>');
+            <% }) %>
+                break;
+            default:
+            <% IdentTypes.forEach(function (IdentType) { if (IdentType.ID.split('_')[1] === "0"){ %>
+                mdui.JQ("#IdentType").append('<option value="<%= IdentType.ID %>"><%= IdentType.Desc %></option>');
+            <% }}) %>
+                break;
+        }
+        selector.handleUpdate();
+    }
+
+    function certTypeChange() {
+        document.getElementById("KeyAlgText").innerText = "证书类型 - "+document.getElementById("certType").value.split('_')[0];
+        document.getElementById("KeyAlg").value = document.getElementById("certType").value.split('_')[0];
+        renewKeyLen();
+        renewIDType();
+    }
+
+    function chooseKeyLen(me) {
+        var childs = me.parentElement.children;
+        for (var i = childs.length - 1; i >= 0; i--) {
+            if (childs[i].innerText != me.innerText) {
+                childs[i].setAttribute("class", "mdui-btn");
+            } else {
+                childs[i].setAttribute("class", "mdui-btn mdui-btn-active");
+            }
+        }
+        document.getElementById("KeyLength").value = me.innerText;
+    };
+</script>
